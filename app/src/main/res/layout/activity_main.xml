@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:weightSum="1"
+            android:layout_marginBottom="5dp">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/imageView"
+                android:layout_margin="0dp"
+                android:layout_marginLeft="0dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:id="@+id/textView"
+                android:layout_alignParentTop="true"
+                android:layout_alignLeft="@+id/ivPhoto"
+                android:layout_alignStart="@+id/ivPhoto"
+                android:layout_marginLeft="2dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:adjustViewBounds="false"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center">
+        </ImageView>
+
+    </LinearLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:id ="@+id/main_button"
+        android:layout_alignParentBottom ="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd ="true"
+        fab:fab_addButtonColorNormal="#4B0082"
+        fab:fab_addButtonColorPressed="#4B0082"
+        fab:fab_addButtonPlusIconColor="#F8F8FF"
+        android:layout_gravity="right">
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id ="@+id/photo_button"
+        fab:fab_colorNormal="#fafafa"
+        fab:fab_colorPressed="#f1f1f1"
+        fab:fab_size="normal"
+        fab:fab_icon="@mipmap/photo_button"
+        android:onClick="onClickPhoto"
+        />
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id ="@+id/gallery_button"
+        fab:fab_colorNormal="#fafafa"
+        fab:fab_colorPressed="#f1f1f1"
+        fab:fab_size="normal"
+        android:onClick="onClickGallery"
+        fab:fab_icon="@mipmap/gallery_button" />
+
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</RelativeLayout>
