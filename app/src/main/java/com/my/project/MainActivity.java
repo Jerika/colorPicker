@@ -10,6 +10,7 @@ import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -23,8 +24,20 @@ import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -159,45 +172,10 @@ public class MainActivity extends ActionBarActivity {
                         ivPhoto.setImageMatrix(matrix);
                         ivPhoto.setImageBitmap(imageToSave);
                         setTouch();
-                       /* String path = android.os.Environment
-                                .getExternalStorageDirectory()
-                                + File.separator
-                                + "Phoenix" + File.separator + "default";
-                        f.delete();
-                        OutputStream outFile = null;
-                        File file = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
-                        try {
-                            outFile = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
-                            outFile.flush();
-                            outFile.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }*/
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    /*if (intent == null) {
-                        ivPhoto.setImageURI(foto);
-                        setTouch();
-                        Log.d(TAG, "Intent is null");
-                    } else {
-                        Log.d(TAG, "Photo uri: " + intent.getData());
-                        Bundle bndl = intent.getExtras();
-                        if (bndl != null) {
-                            Object obj = intent.getExtras().get("data");
-                            if (obj instanceof Bitmap) {
-                                Bitmap bitmap = (Bitmap) obj;
-                                Log.d(TAG, "bitmap " + bitmap.getWidth() + " x " + bitmap.getHeight());
-                                ivPhoto.setImageBitmap(bitmap);
-                                setTouch();
-                            }
-                        }
-                    }*/
                 } else if (resultCode == RESULT_CANCELED) {
                     Log.d(TAG, "Canceled");
                 }
@@ -293,11 +271,9 @@ public class MainActivity extends ActionBarActivity {
                         Bitmap bitmap = ((BitmapDrawable) imgDrawable).getBitmap();
                         try {
                             int touchedRGB = bitmap.getPixel(x, y);
-                            int redValue = Color.red(touchedRGB);
-                            int blueValue = Color.blue(touchedRGB);
-                            int greenValue = Color.green(touchedRGB);
                             //Toast.makeText(getApplicationContext(), helper.getColor(redValue, greenValue, blueValue),Toast.LENGTH_SHORT).show();
-                            colorName.setText(helper.getColor(redValue, greenValue, blueValue));
+                            //colorName.setText(helper.getColor(redValue, greenValue, blueValue));
+                            new RequestTask().execute(touchedRGB);
                             color.setBackgroundColor(touchedRGB);
                         } catch (IllegalArgumentException ignored) {
                         }
@@ -332,5 +308,57 @@ public class MainActivity extends ActionBarActivity {
     public void onSaveInstanceState(Bundle toSave) {
         super.onSaveInstanceState(toSave);
         toSave.putParcelable("bitmap", imageToSave);
+    }
+    class RequestTask extends AsyncTask<Integer, String, String> {
+        String colorString = "";
+        int touchedRGB;
+
+        @Override
+        protected void onPostExecute(String s) {
+            colorName.setText(colorString);
+            color.setBackgroundColor(touchedRGB);
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(Integer... params) {
+
+            try {
+                //создаем запрос на сервер
+                DefaultHttpClient hc = new DefaultHttpClient();
+                ResponseHandler<String> res = new BasicResponseHandler();
+                //он у нас будет посылать post запрос
+                HttpPost postMethod = new HttpPost("http://www.vagonka.of.by/colorize.php");
+                //будем передавать два параметра
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+                //передаем параметры
+                touchedRGB = params[0];
+                int redValue = Color.red(touchedRGB);
+                int greenValue = Color.green(touchedRGB);
+                int blueValue = Color.blue(touchedRGB);
+                nameValuePairs.add(new BasicNameValuePair("r", String.valueOf(redValue)));
+                nameValuePairs.add(new BasicNameValuePair("g", String.valueOf(greenValue)));
+                nameValuePairs.add(new BasicNameValuePair("b", String.valueOf(blueValue)));
+                //собераем их вместе и посылаем на сервер
+                postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                //получаем ответ от сервера
+                String response = hc.execute(postMethod, res);
+                JSONObject json = new JSONObject(response);
+                //дальше находим вход в наш json им является ключевое слово data
+                JSONArray urls = json.getJSONArray("data");
+                //проходим циклом по всем нашим параметрам
+                for (int i = 0; i < urls.length(); i++) {
+                   if(i > 0){
+                       colorString +=", " ;
+                   }
+                   colorString += urls.getJSONObject(i).getString("title").toString();
+                }
+
+            } catch (Exception e) {
+                System.out.println("Exp=" + e);
+            }
+            return null;
+        }
+
     }
 }
