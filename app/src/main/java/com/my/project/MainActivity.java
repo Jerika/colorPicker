@@ -324,7 +324,6 @@ public class MainActivity extends ActionBarActivity {
         protected String doInBackground(Integer... params) {
 
             try {
-                //создаем запрос на сервер
                 DefaultHttpClient hc = new DefaultHttpClient();
                 ResponseHandler<String> res = new BasicResponseHandler();
                 //он у нас будет посылать post запрос
