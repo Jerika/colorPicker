@@ -37,14 +37,13 @@
 
         </LinearLayout>
 
-        <ImageView
+        <com.my.project.TouchImageView
             android:id="@+id/ivPhoto"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:adjustViewBounds="false"
-            android:scaleType="fitCenter"
-            android:layout_gravity="center">
-        </ImageView>
+            android:layout_gravity="center"
+            >
+        </com.my.project.TouchImageView>
 
     </LinearLayout>
 
