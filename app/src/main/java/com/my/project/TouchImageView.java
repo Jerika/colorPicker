@@ -39,10 +39,15 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
-import android.widget.Toast;
+import android.widget.TextView;
 
 public class TouchImageView extends ImageView {
-	
+
+    public interface OnColorPickedListener {
+        void onColorPicked(int color);
+    }
+
+
 	private static final String DEBUG = "DEBUG";
 	
 	//
@@ -100,6 +105,7 @@ public class TouchImageView extends ImageView {
     private GestureDetector.OnDoubleTapListener doubleTapListener = null;
     private OnTouchListener userTouchListener = null;
     private OnTouchImageViewListener touchImageViewListener = null;
+    private OnColorPickedListener onColorPickedListener;
 
     public TouchImageView(Context context) {
         super(context);
@@ -137,6 +143,14 @@ public class TouchImageView extends ImageView {
         setState(State.NONE);
         onDrawReady = false;
         super.setOnTouchListener(new PrivateOnTouchListener());
+    }
+
+    public OnColorPickedListener getOnColorPickedListener() {
+        return onColorPickedListener;
+    }
+
+    public void setOnColorPickedListener(OnColorPickedListener onColorPickedListener) {
+        this.onColorPickedListener = onColorPickedListener;
     }
 
     @Override
@@ -722,7 +736,8 @@ public class TouchImageView extends ImageView {
     private void setState(State state) {
     	this.state = state;
     }
-    
+
+
     public boolean canScrollHorizontallyFroyo(int direction) {
         return canScrollHorizontally(direction);
     }
@@ -856,19 +871,18 @@ public class TouchImageView extends ImageView {
                         float eventY = event.getY();
                         float[] eventXY = new float[]{eventX, eventY};
                         Matrix invertMatrix = new Matrix();
-                        ((ImageView) v).getImageMatrix().invert(invertMatrix);
+                        ((TouchImageView) v).getImageMatrix().invert(invertMatrix);
                         invertMatrix.mapPoints(eventXY);
                         int x = (int) eventXY[0];
                         int y = (int) eventXY[1];
-                        Drawable imgDrawable = ((ImageView) v).getDrawable();
+                        Drawable imgDrawable = ((TouchImageView) v).getDrawable();
                         Bitmap bitmap = ((BitmapDrawable) imgDrawable).getBitmap();
                         try {
                             int touchedRGB = bitmap.getPixel(x, y);
-                            int redValue = Color.red(touchedRGB);
-                            int greenValue = Color.green(touchedRGB);
-                            int blueValue = Color.blue(touchedRGB);
-                            MainActivity.setColorName(redValue, greenValue, blueValue, touchedRGB);
-                          } catch (IllegalArgumentException ignored) {
+                            if (onColorPickedListener != null) {
+                                onColorPickedListener.onColorPicked(touchedRGB);
+                            }
+                        } catch (IllegalArgumentException ignored) {
                         }
  	                case MotionEvent.ACTION_POINTER_UP:
 	                    setState(State.NONE);
@@ -876,7 +890,7 @@ public class TouchImageView extends ImageView {
 	            }
             }
             
-            setImageMatrix(matrix);
+           setImageMatrix(matrix);
             
             //
     		// User-defined OnTouchListener

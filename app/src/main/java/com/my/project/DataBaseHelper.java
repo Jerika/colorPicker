@@ -98,10 +98,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public synchronized void close() {
-
         if(myDataBase != null)
             myDataBase.close();
-
         super.close();
     }
 
@@ -114,10 +112,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public String getColor(int red, int green, int blue){
         String color = "";
-
         Cursor cursor = myDataBase.rawQuery("SELECT c.*, ( (c.R-" + red + ")*(c.R-" + red + ")  +  (c.G-" + green + ")*(c.G-" + green + ")  +  (c.B-" + blue + ")*(c.B-" + blue + ") ) AS `distance` FROM colors as c ORDER BY `distance` ASC LIMIT 3", null);
         cursor.moveToFirst();
-
         while (cursor.isAfterLast() == false) {
             String colorName = cursor.getString(cursor
                     .getColumnIndex("title"));
