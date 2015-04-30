@@ -6,11 +6,13 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     //The Android's default system path of your application database.
@@ -110,17 +112,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public String getColor(int red, int green, int blue){
-        String color = "";
+    public ArrayList<Colors> getColor(int red, int green, int blue){
+        ArrayList<Colors> colorsFromDB = new ArrayList<Colors>();
         Cursor cursor = myDataBase.rawQuery("SELECT c.*, ( (c.R-" + red + ")*(c.R-" + red + ")  +  (c.G-" + green + ")*(c.G-" + green + ")  +  (c.B-" + blue + ")*(c.B-" + blue + ") ) AS `distance` FROM colors as c ORDER BY `distance` ASC LIMIT 3", null);
         cursor.moveToFirst();
         while (cursor.isAfterLast() == false) {
-            String colorName = cursor.getString(cursor
-                    .getColumnIndex("title"));
-            color = color + colorName + ", ";
+            Colors tempColor = new Colors();
+            tempColor.name = cursor.getString(cursor.getColumnIndex("title"));
+            tempColor.color = Color.rgb(cursor.getInt(cursor.getColumnIndex("R")), cursor.getInt(cursor.getColumnIndex("G")), cursor.getInt(cursor.getColumnIndex("B")));
+            colorsFromDB.add(tempColor);
             cursor.moveToNext();
         }
-        return color;
+        return colorsFromDB;
     }
 
+    public class Colors{
+        String name;
+        int color;
+    }
 }

@@ -19,6 +19,7 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity implements TouchImageView.OnColorPickedListener{
@@ -31,7 +32,12 @@ public class MainActivity extends ActionBarActivity implements TouchImageView.On
     Bitmap imageToSave;
     FloatingActionsMenu menu;
     public ImageView color;
-    public TextView colorName;
+    public TextView colorFirstName;
+    public ImageView colorFirst;
+    public TextView colorSecondName;
+    public ImageView colorSecond;
+    public TextView colorThirdName;
+    public ImageView colorThird;
 
 
     @Override
@@ -47,7 +53,14 @@ public class MainActivity extends ActionBarActivity implements TouchImageView.On
         helper.openDataBase();
         ivPhoto = (TouchImageView) findViewById(R.id.ivPhoto);
         color = (ImageView) findViewById(R.id.imageView);
-        colorName = (TextView) findViewById(R.id.textView);
+
+        colorFirst = (ImageView) findViewById(R.id.firstColor);
+        colorFirstName = (TextView) findViewById(R.id.firstColorName);
+        colorSecond = (ImageView) findViewById(R.id.secondColor);
+        colorSecondName = (TextView) findViewById(R.id.secondColorName);
+        colorThird = (ImageView) findViewById(R.id.thirdColor);
+        colorThirdName = (TextView) findViewById(R.id.thirdColorName);
+
         ivPhoto.setImageResource(R.drawable.color_picker);
         ivPhoto.setMaxZoom(10);
         ivPhoto.setOnColorPickedListener(this);
@@ -167,10 +180,22 @@ public class MainActivity extends ActionBarActivity implements TouchImageView.On
 
     @Override
     public void onColorPicked(int colorRGB) {
-        int redValue = Color.red(colorRGB);
-        int greenValue = Color.green(colorRGB);
-        int blueValue = Color.blue(colorRGB);
-        colorName.setText(helper.getColor(redValue, greenValue, blueValue));
-        color.setBackgroundColor(colorRGB);
+        if (colorRGB != 0 ){
+            int redValue = Color.red(colorRGB);
+            int greenValue = Color.green(colorRGB);
+            int blueValue = Color.blue(colorRGB);
+            ArrayList<DataBaseHelper.Colors> colorsFromDB = helper.getColor(redValue, greenValue, blueValue);
+
+            colorFirst.setBackgroundColor(colorsFromDB.get(0).color);
+            colorFirstName.setText(colorsFromDB.get(0).name);
+
+            colorSecond.setBackgroundColor(colorsFromDB.get(1).color);
+            colorSecondName.setText(colorsFromDB.get(1).name);
+
+            colorThird.setBackgroundColor(colorsFromDB.get(2).color);
+            colorThirdName.setText(colorsFromDB.get(2).name);
+
+            color.setBackgroundColor(colorRGB);
+        }
     }
 }

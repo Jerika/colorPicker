@@ -15,25 +15,94 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="64dp"
             android:weightSum="1"
             android:layout_marginBottom="5dp">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:id="@+id/imageView"
                 android:layout_margin="0dp"
                 android:layout_marginLeft="0dp" />
 
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/textView"
-                android:layout_alignParentTop="true"
-                android:layout_alignLeft="@+id/ivPhoto"
-                android:layout_alignStart="@+id/ivPhoto"
-                android:layout_marginLeft="2dp" />
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="1dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/firstColor"
+                        android:layout_margin="0dp"
+                        android:layout_marginLeft="0dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:id="@+id/firstColorName"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignLeft="@+id/ivPhoto"
+                        android:layout_alignStart="@+id/ivPhoto"
+                        android:layout_marginLeft="2dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/secondColor"
+                        android:layout_margin="0dp"
+                        android:layout_marginLeft="0dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:id="@+id/secondColorName"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignLeft="@+id/ivPhoto"
+                        android:layout_alignStart="@+id/ivPhoto"
+                        android:layout_marginLeft="2dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="1dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/thirdColor"
+                        android:layout_margin="0dp"
+                        android:layout_marginLeft="0dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:id="@+id/thirdColorName"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignLeft="@+id/ivPhoto"
+                        android:layout_alignStart="@+id/ivPhoto"
+                        android:layout_marginLeft="2dp" />
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
