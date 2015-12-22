@@ -61,14 +61,14 @@ public class MainActivity extends ActionBarActivity implements TouchImageView.On
         colorThird = (ImageView) findViewById(R.id.thirdColor);
         colorThirdName = (TextView) findViewById(R.id.thirdColorName);
 
-        ivPhoto.setImageResource(R.drawable.color_picker);
+        ivPhoto.setImageResource(R.drawable.rainbow);
         ivPhoto.setMaxZoom(10);
         ivPhoto.setOnColorPickedListener(this);
         menu = (FloatingActionsMenu) findViewById(R.id.main_button);
         if (savedInstanceState != null) {
             imageToSave = savedInstanceState.getParcelable("bitmap");
             if (imageToSave == null) {
-                ivPhoto.setImageResource(R.drawable.color_picker);
+                ivPhoto.setImageResource(R.drawable.rainbow);
             } else {
                 ivPhoto.setImageBitmap(imageToSave);
           }
