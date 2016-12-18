@@ -1,19 +1,26 @@
 package com.my.project;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -21,22 +28,37 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class MainActivity extends ActionBarActivity implements TouchImageView.OnColorPickedListener{
+
+public class MainActivity extends AppCompatActivity implements TouchImageView.OnColorPickedListener{
 
     final int REQUEST_CODE_PHOTO = 1;
     final int REQUEST_CODE_GALLERY = 2;
+    final int REQUEST_CAMERA_PERMISSION = 3;
     final String TAG = "myLogs";
-    TouchImageView ivPhoto;
+
     DataBaseHelper helper;
     Bitmap imageToSave;
+
+  //  @BindView(R.id.main_button)
     FloatingActionsMenu menu;
+  //  @BindView(R.id.ivPhoto)
+    TouchImageView ivPhoto;
+ //   @BindView(R.id.imageView)
     public ImageView color;
+ //   @BindView(R.id.firstColorName)
     public TextView colorFirstName;
+ ////   @BindView(R.id.firstColor)
     public ImageView colorFirst;
+ //   @BindView(R.id.secondColorName)
     public TextView colorSecondName;
+ //   @BindView(R.id.secondColor)
     public ImageView colorSecond;
+  //  @BindView(R.id.thirdColorName)
     public TextView colorThirdName;
+ //   @BindView(R.id.thirdColor)
     public ImageView colorThird;
 
 
@@ -44,6 +66,7 @@ public class MainActivity extends ActionBarActivity implements TouchImageView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    //    ButterKnife.bind(this);
         helper = new DataBaseHelper(this);
         try {
             helper.createDataBase();
@@ -75,8 +98,44 @@ public class MainActivity extends ActionBarActivity implements TouchImageView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean isCameraPermissionsGranted() {
+        return checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA_PERMISSION:
+                if (!isPermissionsGranted(grantResults)) {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
+                } else {
+                    startCamera();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private boolean isPermissionsGranted(int[] grantResults) {
+        return grantResults[0] == PackageManager.PERMISSION_GRANTED;
+    }
+
     public void onClickPhoto(View view) {
         menu.collapse();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (!isCameraPermissionsGranted()) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+            } else {
+                startCamera();
+            }
+        } else {
+            startCamera();
+        }
+    }
+
+    private void startCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
         File f;

@@ -128,6 +128,7 @@
         fab:fab_addButtonColorPressed="#4B0082"
         fab:fab_addButtonPlusIconColor="#F8F8FF"
         android:layout_gravity="right">
+
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
